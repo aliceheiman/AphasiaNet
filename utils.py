@@ -45,6 +45,32 @@ def process_with_openai(text, model):
         return None
 
 
+def get_keywords_openai(text, model):
+    try:
+        response = openai.chat.completions.create(
+            model=model,
+            messages=[
+                {
+                    "role": "system",
+                    "content": "You are an assistant that can pick out keywords from a transcription. As a comma separated string, output the relevant keywords (if any) given the transcript. You can only choose between 'cannot-talk', 'explain', 'food', 'pain', 'sleep'.",
+                },
+                {
+                    "role": "user",
+                    "content": f"Find the keywords in the text: {text}",
+                },
+            ],
+            temperature=0.3,
+            max_tokens=1024,
+        )
+
+        # Extract the content from the response
+        cleaned_text = response.choices[0].message.content
+        return cleaned_text
+    except Exception as e:
+        st.error(f"OpenAI API error: {e}")
+        return None
+
+
 # Function for text-to-speech
 def text_to_speech(text, voice_id, model_id, client):
     try:
