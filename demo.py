@@ -10,9 +10,9 @@ st.set_page_config(page_title="Speech Processing Demo", layout="wide")
 
 # Initialize session state for storing app state
 if "processed_text" not in st.session_state:
-    st.session_state.processed_text = ""
+    st.session_state["processed_text"] = ""
 if "original_text" not in st.session_state:
-    st.session_state.original_text = ""
+    st.session_state["original_text"] = ""
 
 # App title and description
 st.title("Speech Processing Demo")
@@ -169,14 +169,14 @@ with tab1:
             transcription = speech_to_text(tmp_filepath, stt_model, eleven_client)
 
             if transcription:
-                st.session_state.original_text = transcription
+                st.session_state["original_text"] = transcription
 
                 # Process with OpenAI
                 st.info("Processing text with AI...")
                 processed_text = process_with_openai(transcription, llm_model)
 
                 if processed_text:
-                    st.session_state.processed_text = processed_text
+                    st.session_state["processed_text"] = processed_text
                     st.success("Processing complete! Go to Results tab.")
 
             # Clean up temp file
@@ -184,12 +184,12 @@ with tab1:
 
 with tab2:
     # Display original and processed text
-    if st.session_state.original_text:
+    if st.session_state["original_text"]:
         st.subheader("Original Transcription")
-        st.text_area("", st.session_state.original_text, height=150)
+        st.text_area("", st.session_state["original_text"], height=150)
 
         st.subheader("Processed Text")
-        st.text_area("", st.session_state.processed_text, height=150)
+        st.text_area("", st.session_state["processed_text"], height=150)
 
         # Text to speech section
         st.subheader("Text to Speech")
@@ -202,9 +202,9 @@ with tab2:
             with st.spinner("Converting text to speech..."):
                 eleven_client = initialize_clients()
                 text_to_convert = (
-                    st.session_state.original_text
+                    st.session_state["original_text"]
                     if option == "Original"
-                    else st.session_state.processed_text
+                    else st.session_state["processed_text"]
                 )
 
                 audio_stream = text_to_speech(
